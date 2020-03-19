@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Keyboard } from 'react-native';
+import { Keyboard, ActivityIndicator } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import api from '../../services/api';
 
@@ -20,8 +20,11 @@ import {
 export default function Main() {
   const [users, setUsers] = useState([]);
   const [newUser, setNewUser] = useState('');
+  const [loading, setLoading] = useState(false);
 
   const handleSubmit = async () => {
+    setLoading(true);
+
     const response = await api.get(`/users/${newUser}`);
 
     const user = {
@@ -35,6 +38,7 @@ export default function Main() {
     setNewUser('');
 
     Keyboard.dismiss();
+    setLoading(false);
   };
 
   return (
@@ -49,8 +53,9 @@ export default function Main() {
           returnKeyType="send"
           onSubmitEditing={handleSubmit}
         />
-        <SubmitButton onPress={handleSubmit}>
-          <Icon name="add" size={20} color="#FFF" />
+        <SubmitButton onPress={handleSubmit} loading={loading}>
+          {loading && <ActivityIndicator color="#FFF" />}
+          {!loading && <Icon name="add" size={20} color="#FFF" />}
         </SubmitButton>
       </Form>
 
@@ -63,7 +68,7 @@ export default function Main() {
             <Name>{item.name}</Name>
             <Bio>{item.bio}</Bio>
 
-            <ProfileButton onPress={() => { }}>
+            <ProfileButton>
               <ProfileButtonText>Ver perfil</ProfileButtonText>
             </ProfileButton>
           </User>
