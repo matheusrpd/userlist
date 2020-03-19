@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Keyboard, ActivityIndicator } from 'react-native';
+import PropTypes from 'prop-types';
 import AsyncStorage from '@react-native-community/async-storage';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import api from '../../services/api';
@@ -18,7 +19,7 @@ import {
   ProfileButtonText,
 } from './styles';
 
-export default function Main() {
+export default function Main({ navigation }) {
   const [users, setUsers] = useState([]);
   const [newUser, setNewUser] = useState('');
   const [loading, setLoading] = useState(false);
@@ -62,6 +63,10 @@ export default function Main() {
     setLoading(false);
   };
 
+  const handleNavigate = user => {
+    navigation.navigate('User', { user });
+  };
+
   return (
     <Container>
       <Form>
@@ -89,7 +94,7 @@ export default function Main() {
             <Name>{item.name}</Name>
             <Bio>{item.bio}</Bio>
 
-            <ProfileButton>
+            <ProfileButton onPress={() => handleNavigate(item)}>
               <ProfileButtonText>Ver perfil</ProfileButtonText>
             </ProfileButton>
           </User>
@@ -98,3 +103,9 @@ export default function Main() {
     </Container>
   );
 }
+
+Main.propTypes = {
+  navigation: PropTypes.shape({
+    navigate: PropTypes.func,
+  }).isRequired,
+};
