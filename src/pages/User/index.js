@@ -21,7 +21,7 @@ import {
 export default function User({ route }) {
   const [loading, setLoading] = useState(true);
   const [page, setPage] = useState(1);
-  // const [refreshing, setRefreshing] = useState(false);
+  const [refreshing, setRefreshing] = useState(false);
   const [stars, setStars] = useState([]);
   const { user } = route.params;
 
@@ -32,7 +32,7 @@ export default function User({ route }) {
 
     setStars(numberPage >= 2 ? [...stars, ...response.data] : response.data);
     setPage(numberPage);
-
+    setRefreshing(false);
     setLoading(false);
   };
 
@@ -42,13 +42,11 @@ export default function User({ route }) {
     loadStars(nextPage);
   };
 
-  /*
   const refreshList = () => {
     setRefreshing(true);
     setStars([]);
-    loadStars();
+    loadStars(1);
   };
-  */
 
   useEffect(() => {
     loadStars(page);
@@ -66,6 +64,8 @@ export default function User({ route }) {
       {!loading && (
         <Stars
           data={stars}
+          onRefresh={refreshList}
+          refreshing={refreshing}
           onEndReachedThreshold={0.2}
           onEndReached={loadStarsMore}
           keyExtractor={star => String(star.id)}
