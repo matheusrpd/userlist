@@ -1,3 +1,4 @@
+/* eslint-disable camelcase */
 import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import api from '../../services/api';
@@ -18,22 +19,39 @@ import {
 } from './styles';
 
 export default function User({ route }) {
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
+  const [page, setPage] = useState(1);
+  // const [refreshing, setRefreshing] = useState(false);
   const [stars, setStars] = useState([]);
   const { user } = route.params;
 
-  useEffect(() => {
-    const loadStars = async () => {
-      setLoading(true);
+  const loadStars = async numberPage => {
+    const response = await api.get(`/users/${user.login}/starred`, {
+      params: { page: numberPage },
+    });
 
-      const response = await api.get(`/users/${user.login}/starred`);
+    setStars(numberPage >= 2 ? [...stars, ...response.data] : response.data);
+    setPage(numberPage);
 
-      setStars(response.data);
+    setLoading(false);
+  };
 
-      setLoading(false);
-    };
+  const loadStarsMore = () => {
+    const nextPage = page + 1;
 
+    loadStars(nextPage);
+  };
+
+  /*
+  const refreshList = () => {
+    setRefreshing(true);
+    setStars([]);
     loadStars();
+  };
+  */
+
+  useEffect(() => {
+    loadStars(page);
   }, []);
 
   return (
@@ -48,6 +66,8 @@ export default function User({ route }) {
       {!loading && (
         <Stars
           data={stars}
+          onEndReachedThreshold={0.2}
+          onEndReached={loadStarsMore}
           keyExtractor={star => String(star.id)}
           renderItem={({ item }) => (
             <Starred>
