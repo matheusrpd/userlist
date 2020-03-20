@@ -12,7 +12,7 @@ export default function Routes() {
       headerBackTitleVisible={false}
       screenOptions={{
         headerStyle: {
-          backgroundColor: '#7159c1',
+          backgroundColor: '#24292E',
         },
         headerTintColor: '#FFF',
         headerTitleAlign: 'center',
