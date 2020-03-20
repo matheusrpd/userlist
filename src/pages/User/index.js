@@ -14,17 +14,23 @@ import {
   Info,
   Title,
   Author,
+  Loading,
 } from './styles';
 
 export default function User({ route }) {
+  const [loading, setLoading] = useState(false);
   const [stars, setStars] = useState([]);
   const { user } = route.params;
 
   useEffect(() => {
     const loadStars = async () => {
+      setLoading(true);
+
       const response = await api.get(`/users/${user.login}/starred`);
 
       setStars(response.data);
+
+      setLoading(false);
     };
 
     loadStars();
@@ -38,19 +44,22 @@ export default function User({ route }) {
         <Bio>{user.bio}</Bio>
       </Header>
 
-      <Stars
-        data={stars}
-        keyExtractor={star => String(star.id)}
-        renderItem={({ item }) => (
-          <Starred>
-            <OwnerAvatar source={{ uri: item.owner.avatar_url }} />
-            <Info>
-              <Title>{item.name}</Title>
-              <Author>{item.owner.login}</Author>
-            </Info>
-          </Starred>
-        )}
-      />
+      {loading && <Loading />}
+      {!loading && (
+        <Stars
+          data={stars}
+          keyExtractor={star => String(star.id)}
+          renderItem={({ item }) => (
+            <Starred>
+              <OwnerAvatar source={{ uri: item.owner.avatar_url }} />
+              <Info>
+                <Title>{item.name}</Title>
+                <Author>{item.owner.login}</Author>
+              </Info>
+            </Starred>
+          )}
+        />
+      )}
     </Container>
   );
 }

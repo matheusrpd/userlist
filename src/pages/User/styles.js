@@ -75,3 +75,12 @@ export const Author = styled.Text`
   color: #666;
   margin-top: 2px;
 `;
+
+export const Loading = styled.ActivityIndicator.attrs({
+  color: '#24292e',
+  size: 50,
+})`
+  flex: 1;
+  justify-content: center;
+  align-items: center;
+`;
