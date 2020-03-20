@@ -18,7 +18,7 @@ import {
   Loading,
 } from './styles';
 
-export default function User({ route }) {
+export default function User({ navigation, route }) {
   const [loading, setLoading] = useState(true);
   const [page, setPage] = useState(1);
   const [refreshing, setRefreshing] = useState(false);
@@ -38,7 +38,6 @@ export default function User({ route }) {
 
   const loadStarsMore = () => {
     const nextPage = page + 1;
-
     loadStars(nextPage);
   };
 
@@ -46,6 +45,10 @@ export default function User({ route }) {
     setRefreshing(true);
     setStars([]);
     loadStars(1);
+  };
+
+  const handleNavigate = repository => {
+    navigation.navigate('Repository', { repository });
   };
 
   useEffect(() => {
@@ -70,7 +73,7 @@ export default function User({ route }) {
           onEndReached={loadStarsMore}
           keyExtractor={star => String(star.id)}
           renderItem={({ item }) => (
-            <Starred>
+            <Starred onPress={() => handleNavigate(item)}>
               <OwnerAvatar source={{ uri: item.owner.avatar_url }} />
               <Info>
                 <Title>{item.name}</Title>
@@ -85,5 +88,8 @@ export default function User({ route }) {
 }
 
 User.propTypes = {
+  navigation: PropTypes.shape({
+    navigate: PropTypes.func,
+  }).isRequired,
   route: PropTypes.shape().isRequired,
 };
