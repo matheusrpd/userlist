@@ -1,5 +1,5 @@
 import React from 'react';
-import { createStackNavigator } from '@react-navigation/stack';
+import { createStackNavigator, CardStyleInterpolators } from '@react-navigation/stack';
 
 import Main from './pages/Main';
 import User from './pages/User';
@@ -17,6 +17,7 @@ export default function Routes() {
         },
         headerTintColor: '#FFF',
         headerTitleAlign: 'center',
+        cardStyleInterpolator: CardStyleInterpolators.forHorizontalIOS
       }}
     >
       <Stack.Screen
